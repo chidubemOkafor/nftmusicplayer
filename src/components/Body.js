@@ -5,14 +5,10 @@ const Body = () => {
   const style = {};
 
   return (
-    <div>
+    <div className="bg-zinc-900 full h-screen">
       <div>
         <div className="main">
-          <button>change color</button>
-          <p>playing</p>
           <div className="Circle"></div>
-          <p>Name of song</p>
-          <p>author</p>
         </div>
       </div>
     </div>
