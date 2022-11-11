@@ -1,23 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
-
+import "./App.css";
+import Navbar from "./components/Navbar.js";
+import Sidebar from "./components/Sidebar.js";
+import Body from "./components/Body.js";
+import { useState } from "react";
 function App() {
+  const [accounts, setAccounts] = useState([]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="bg-zinc-900 full h-screen">
+      <Navbar accounts={accounts} setAccounts={setAccounts} />
+      <Sidebar />
+      <Body accounts={accounts} setAccounts={setAccounts} />
     </div>
   );
 }
