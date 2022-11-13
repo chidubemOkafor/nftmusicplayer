@@ -11,7 +11,7 @@ const Body = (props) => {
     <div className=" h-screen justify-between item-center">
       <div className=" justify-between item-center">
         {isConnected ? (
-          <div className="fixed">
+          <div>
             <div>
               <Player className="content-center w-[80vh] h-[40vh] pb-48 text-center justify-between item-center">
                 <source src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4" />
