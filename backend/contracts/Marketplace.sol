@@ -21,18 +21,12 @@ contract Marketplace is ERC721URIStorage {
     constructor() ERC721("Vidduo", "vdo") {}
 
     function list(uint256 _nftId, uint256 _listingPrice) public {
-        require(_listingPrice > 0);
         transferFrom(msg.sender, address(this), _nftId);
         isListed[_nftId] = true;
         price[_nftId] = _listingPrice;
 
         seller = payable(msg.sender);
     }
-
-    //this function is experimental
-    // function timeBasedListing(uint256 _nftId, uint256 _price, Status _status) public {
-
-    // }
 
     function updateListPrice(uint256 _nftId, uint256 _price) public {
         require(isListed[_nftId], "token not listed");
@@ -41,7 +35,7 @@ contract Marketplace is ERC721URIStorage {
 
     function buy(uint256 _nftId) public payable {
         require(isListed[_nftId], "token is not listed");
-        require(msg.value == price[_nftId]);
+        require(msg.value == price[_nftId], "not equal to price");
         finalizeSale(_nftId);
     }
 
@@ -49,6 +43,7 @@ contract Marketplace is ERC721URIStorage {
         public
         payable
     {
+        require(_price > 0, "value must be greater than zero");
         require(msg.value == createTokenFee);
         _nftIds.increment();
         uint256 newItemId = _nftIds.current();
@@ -66,7 +61,7 @@ contract Marketplace is ERC721URIStorage {
 
     function finalizeSale(uint256 _nftId) private {
         require(isListed[_nftId]);
-        transferFrom(address(this), msg.sender, _nftId);
+        _transfer(address(this), msg.sender, _nftId);
         (bool success, ) = payable(seller).call{value: msg.value}("");
         require(success);
         isListed[_nftId] = false;

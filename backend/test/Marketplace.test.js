@@ -52,14 +52,17 @@ describe("MarketPlace", async () => {
 
     describe("buy", async () => {
       it("buys the nft", async () => {
-        let transaction = await Marketplace.connect(seller).approve(
-          buyer.address,
-          1
-        );
-        transaction = await Marketplace.connect(buyer).buy(1, {
+        let transaction = await Marketplace.connect(buyer).buy(1, {
           value: toWEI(5),
         });
-        await Marketplace.wait();
+        await transaction.wait();
+      });
+      it("updates the owner", async () => {
+        assert.equal(await Marketplace.ownerOf(1), buyer.address);
+      });
+      it("checks if is listed is false", async () => {
+        assert.equal(await Marketplace.isListed(1), false);
+        console.log(await Marketplace.getBalance().toString());
       });
     });
   });
