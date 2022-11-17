@@ -57,6 +57,7 @@ describe("MarketPlace", async () => {
         });
         await transaction.wait();
       });
+
       it("updates the owner", async () => {
         assert.equal(await Marketplace.ownerOf(1), buyer.address);
       });

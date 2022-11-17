@@ -13,28 +13,38 @@ contract Marketplace is ERC721URIStorage {
     address payable public seller;
     uint256 public createTokenFee = 0.02 ether;
 
+    //modifier
+    modifier onlyListed(uint256 _nftId) {
+        require(isListed[_nftId], "token must listed");
+        _;
+    }
+
+    //mappings
     mapping(uint256 => bool) public isListed;
     mapping(uint256 => uint256) public price;
-    // this shows wether the format is music or video
     mapping(uint256 => uint256) public marketPlaceAddress;
 
+    //array
+    // MarketItem[] public marketItems;
+
+    //constructor
     constructor() ERC721("Vidduo", "vdo") {}
 
-    function list(uint256 _nftId, uint256 _listingPrice) public {
+    function list(uint256 _nftId, uint256 _listingPrice) private {
         transferFrom(msg.sender, address(this), _nftId);
         isListed[_nftId] = true;
         price[_nftId] = _listingPrice;
-
         seller = payable(msg.sender);
     }
 
-    function updateListPrice(uint256 _nftId, uint256 _price) public {
-        require(isListed[_nftId], "token not listed");
+    function updateListPrice(uint256 _nftId, uint256 _price)
+        public
+        onlyListed(_nftId)
+    {
         price[_nftId] = _price;
     }
 
-    function buy(uint256 _nftId) public payable {
-        require(isListed[_nftId], "token is not listed");
+    function buy(uint256 _nftId) public payable onlyListed(_nftId) {
         require(msg.value == price[_nftId], "not equal to price");
         finalizeSale(_nftId);
     }
@@ -62,8 +72,7 @@ contract Marketplace is ERC721URIStorage {
     function finalizeSale(uint256 _nftId) private {
         require(isListed[_nftId]);
         _transfer(address(this), msg.sender, _nftId);
-        (bool success, ) = payable(seller).call{value: msg.value}("");
-        require(success);
+        seller.transfer(msg.value);
         isListed[_nftId] = false;
     }
 
