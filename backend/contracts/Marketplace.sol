@@ -24,14 +24,12 @@ contract Marketplace is ERC721URIStorage {
     mapping(uint256 => uint256) public price;
     mapping(uint256 => uint256) public marketPlaceAddress;
 
-    //array
-    // MarketItem[] public marketItems;
-
     //constructor
     constructor() ERC721("Vidduo", "vdo") {}
 
-    function list(uint256 _nftId, uint256 _listingPrice) private {
-        transferFrom(msg.sender, address(this), _nftId);
+    function list(uint256 _nftId, uint256 _listingPrice) public {
+        require(msg.sender == ownerOf(_nftId), "you are not the owner");
+        _transfer(msg.sender, address(this), _nftId);
         isListed[_nftId] = true;
         price[_nftId] = _listingPrice;
         seller = payable(msg.sender);
@@ -54,13 +52,17 @@ contract Marketplace is ERC721URIStorage {
         payable
     {
         require(_price > 0, "value must be greater than zero");
-        require(msg.value == createTokenFee);
+        require(msg.value == createTokenFee, "value no create token fee");
         _nftIds.increment();
         uint256 newItemId = _nftIds.current();
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, _tokenUri);
         list(newItemId, _price);
     }
+
+    // function getUnSoldNft() public view returns() {
+    //     return
+    // }
 
     function totalsupply() public view returns (uint256) {
         return _nftIds.current();
@@ -69,10 +71,10 @@ contract Marketplace is ERC721URIStorage {
     // this is a fallback function for recieving ether
     receive() external payable {}
 
-    function finalizeSale(uint256 _nftId) private {
-        require(isListed[_nftId]);
-        _transfer(address(this), msg.sender, _nftId);
+    function finalizeSale(uint256 _nftId) private onlyListed(_nftId) {
+        _transfer(ownerOf(_nftId), msg.sender, _nftId);
         seller.transfer(msg.value);
+        price[_nftId] = 0;
         isListed[_nftId] = false;
     }
 

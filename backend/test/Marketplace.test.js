@@ -41,30 +41,44 @@ describe("MarketPlace", async () => {
       assert.equal(balance, toWei(0.02));
     });
 
-    describe("updatesListPrice", async () => {
-      it("updates listed nft price", async () => {
-        const newPrice = toWei(20);
-        const update = await Marketplace.updateListPrice(1, newPrice);
-        await update.wait();
-        assert.equal(await Marketplace.price(1), newPrice);
+    it("buys the nft", async () => {
+      let transaction = await Marketplace.connect(buyer).buy(1, {
+        value: toWEI(5),
       });
     });
 
-    describe("buy", async () => {
-      it("buys the nft", async () => {
-        let transaction = await Marketplace.connect(buyer).buy(1, {
-          value: toWEI(5),
-        });
-        await transaction.wait();
-      });
-
-      it("updates the owner", async () => {
-        assert.equal(await Marketplace.ownerOf(1), buyer.address);
-      });
-      it("checks if is listed is false", async () => {
-        assert.equal(await Marketplace.isListed(1), false);
-        console.log(await Marketplace.getBalance().toString());
-      });
+    it("udates the ownership", async () => {
+      assert.equal(await Marketplace.ownerOf(1), buyer.address);
     });
+
+    it("lists the nft", async () => {
+      await Marketplace.list(1, toWEI(6));
+      assert.equal(await Marketplace.ownerOf(1), Marketplace.address);
+    });
+    // describe("updatesListPrice", async () => {
+    //   it("updates listed nft price", async () => {
+    //     const newPrice = toWei(20);
+    //     const update = await Marketplace.updateListPrice(1, newPrice);
+    //     await update.wait();
+    //     assert.equal(await Marketplace.price(1), newPrice);
+    //   });
+    // });
+
+    // describe("buy", async () => {
+    //   it("buys the nft", async () => {
+    //     let transaction = await Marketplace.connect(buyer).buy(1, {
+    //       value: toWEI(5),
+    //     });
+    //     await transaction.wait();
+    //   });
+
+    //   it("updates the owner", async () => {
+    //     assert.equal(await Marketplace.ownerOf(1), buyer.address);
+    //   });
+    //   it("checks if is listed is false", async () => {
+    //     assert.equal(await Marketplace.isListed(1), false);
+    //     console.log(await Marketplace.getBalance().toString());
+    //   });
+    // });
   });
 });
