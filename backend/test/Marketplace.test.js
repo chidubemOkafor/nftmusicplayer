@@ -55,6 +55,10 @@ describe("MarketPlace", async () => {
       await Marketplace.list(1, toWEI(6));
       assert.equal(await Marketplace.ownerOf(1), Marketplace.address);
     });
+    it("returns the createTokenFee price", async () => {
+      assert.equal(await Marketplace.createTokenFee(), toWei(0.02));
+      console.log((await Marketplace.createTokenFee()).toString());
+    });
     // describe("updatesListPrice", async () => {
     //   it("updates listed nft price", async () => {
     //     const newPrice = toWei(20);

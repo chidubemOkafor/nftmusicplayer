@@ -11,7 +11,7 @@ contract Marketplace is ERC721URIStorage {
     Counters.Counter private _nftIds;
 
     address payable public seller;
-    uint256 public createTokenFee = 0.02 ether;
+    // uint256 public createTokenFee = 0.02 ether;
 
     //modifier
     modifier onlyListed(uint256 _nftId) {
@@ -47,12 +47,9 @@ contract Marketplace is ERC721URIStorage {
         finalizeSale(_nftId);
     }
 
-    function createToken(string memory _tokenUri, uint256 _price)
-        public
-        payable
-    {
+    function createToken(string memory _tokenUri, uint256 _price) public {
         require(_price > 0, "value must be greater than zero");
-        require(msg.value == createTokenFee, "value no create token fee");
+        // require(msg.value == createTokenFee, "value no create token fee");
         _nftIds.increment();
         uint256 newItemId = _nftIds.current();
         _mint(msg.sender, newItemId);

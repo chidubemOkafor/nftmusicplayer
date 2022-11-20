@@ -78,12 +78,10 @@ function Upload(props) {
       );
 
       //massage the params to be sent to the create NFT request
-      const price = ethers.utils.parseUnits(formParams.price, "ether");
-      let listingPrice = ethers.utils.parseEther("0.02");
+      const price = ethers.utils.parseEther(formParams.price);
+
       //actually create the NFT
-      let transaction = await contract.createToken(metadataURL, price, {
-        value: listingPrice,
-      });
+      let transaction = await contract.createToken(metadataURL, price);
       await transaction.wait();
 
       alert("Successfully listed your NFT!");
@@ -91,7 +89,7 @@ function Upload(props) {
       updateFormParams({ name: "", description: "", price: "" });
       window.location.replace("/");
     } catch (e) {
-      alert("Upload error" + e);
+      alert("Upload error = " + e);
     }
   }
 
