@@ -2,7 +2,6 @@ import { useState } from "react";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "./piniata.js";
 import Marketplace from "./Marketplace.json";
 import { AiOutlineLoading } from "react-icons/ai";
-import { useLocation } from "react-router";
 
 function Upload(props) {
   const { accounts } = props;
@@ -16,7 +15,6 @@ function Upload(props) {
   const [fileURL, setFileURL] = useState(null);
   const ethers = require("ethers");
   const [message, updateMessage] = useState("");
-  const location = useLocation();
 
   //This function uploads the NFT image to IPFS
   async function OnChangeFile(e) {
@@ -52,6 +50,7 @@ function Upload(props) {
       const response = await uploadJSONToIPFS(nftJSON);
       if (response.success === true) {
         console.log("Uploaded JSON to Pinata: ", response);
+        console.log(response.pinataURL);
         return response.pinataURL;
       }
     } catch (e) {
@@ -78,7 +77,7 @@ function Upload(props) {
       );
 
       //massage the params to be sent to the create NFT request
-      const price = ethers.utils.parseEther(formParams.price);
+      const price = ethers.utils.parseUnits(formParams.price, "ether");
 
       //actually create the NFT
       let transaction = await contract.createToken(metadataURL, price);

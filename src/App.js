@@ -1,4 +1,5 @@
 import "./App.css";
+import Music from "./components/Music.js";
 import Navbar from "./components/Navbar.js";
 import Body from "./components/Body.js";
 import Upload from "./components/Upload.js";
@@ -22,10 +23,10 @@ function App() {
             path="/Upload"
             element={<Upload accounts={accounts} setAccounts={setAccounts} />}
           />
-          {/* <Route
+          <Route
             path="/Music"
             element={<Music accounts={accounts} setAccounts={setAccounts} />}
-          /> */}
+          />
         </Routes>
       </Router>
     </div>
