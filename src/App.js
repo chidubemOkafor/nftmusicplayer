@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   const [accounts, setAccounts] = useState([]);
+  const [contract, setContract] = useState({});
 
   return (
     <div>
@@ -21,11 +22,25 @@ function App() {
           />
           <Route
             path="/Upload"
-            element={<Upload accounts={accounts} setAccounts={setAccounts} />}
+            element={
+              <Upload
+                accounts={accounts}
+                setAccounts={setAccounts}
+                contract={contract}
+                setContract={setContract}
+              />
+            }
           />
           <Route
             path="/Music"
-            element={<Music accounts={accounts} setAccounts={setAccounts} />}
+            element={
+              <Music
+                accounts={accounts}
+                setAccounts={setAccounts}
+                contract={contract}
+                setContract={setContract}
+              />
+            }
           />
         </Routes>
       </Router>

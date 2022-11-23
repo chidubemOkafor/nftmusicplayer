@@ -4,7 +4,7 @@ import Marketplace from "./Marketplace.json";
 import { AiOutlineLoading } from "react-icons/ai";
 
 function Upload(props) {
-  const { accounts } = props;
+  const { accounts, setContract } = props;
   const isConnected = Boolean(accounts[0]);
 
   const [formParams, updateFormParams] = useState({
@@ -75,6 +75,7 @@ function Upload(props) {
         Marketplace.abi,
         signer
       );
+      setContract(contract);
 
       //massage the params to be sent to the create NFT request
       const price = ethers.utils.parseUnits(formParams.price, "ether");
