@@ -7,7 +7,7 @@ module.exports = {
         ubuntu: ["Ubuntu"],
       },
       animation: {
-        spin: "spin 3s linear infinite",
+        spin2: "spin 3s linear infinite",
       },
     },
   },

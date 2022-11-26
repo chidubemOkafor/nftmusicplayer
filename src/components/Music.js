@@ -10,39 +10,45 @@ import { TfiReload } from "react-icons/tfi";
 import { useState, useRef, useEffect } from "react";
 import ReactAudioPlayer from "react-audio-player";
 import { onPlay } from "react-audio-player";
-import image from "../images/vidduo-high-resolution-color-logo.png";
+import image from "../images/vidduo-high-resolution-color-logo.png"; //this would be chainged
 import { ethers } from "ethers";
 
 const Music = (props) => {
   const { accounts, contract } = props;
   const isConnected = Boolean(accounts[0]);
   const [musicName, setMusicName] = useState("john bellon hand of god");
-  const [swith, setSwitch] = useState(true);
+  const [swith, setSwitch] = useState(true); // this is to change the play an pause button
   const [isPlaying, setIsPlaying] = useState(false);
+  const [audiolink, setAudioLink] = useState(
+    "https://gateway.pinata.cloud/ipfs/QmZNRnT17a8TjsWPRtQjeCGhkMECkTSWRijKnmpq8tduC1"
+  );
+  const [duration, setDuration] = useState("0.00");
+  const [audio, setAudio] = useState(new Audio(audiolink));
   const [spin, setSpin] = useState("mt-10 h-36 w-36 rounded-full");
 
+  // interaction with smart contract
   const web3Handler = () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const account = accounts[0];
   };
 
-  const loadContract = () => contract;
+  const loadContract = () => contract; // this code is not completed
 
-  const audioFile =
-    "https://gateway.pinata.cloud/ipfs/QmZNRnT17a8TjsWPRtQjeCGhkMECkTSWRijKnmpq8tduC1";
-  let audio = new Audio(audioFile);
+  //audio
 
-  const play = () => {
+  const play = async () => {
     setSwitch(false);
-    setSpin("motion-safe:animate-spin mt-10 h-36 w-36 rounded-full");
-    return audio.play();
+    setSpin("motion-safe:animate-spin2 mt-10 h-36 w-36 rounded-full");
+    audio.play();
+    setDuration(audio.duration().toString());
   };
   const pause = () => {
     setSwitch(true);
     setSpin("mt-10 h-36 w-36 rounded-full");
-    return audio.pause();
+    audio.pause();
   };
+
   // const length = "10px";
   const audioEl = useRef(null);
   return (
@@ -59,11 +65,13 @@ const Music = (props) => {
             </p>
             <div className="w-56 mt-6 h-1 bg-white rounded">
               <div className="w-[40px] mt-6 h-1 bg-pink-600 rounded" />
+              <div className="flex justify-between">
+                <p className="text-white">{duration}</p>
+                <p className="text-white">{duration}</p>
+              </div>
             </div>
-            <audio ref={audioEl}></audio>
             <div className="flex mt-6 space-x-4 text-white">
               <button>
-                {" "}
                 <TfiReload className="transition ease-in-out delay-150 h-8 w-8 hover:text-pink-600" />
               </button>
               <button>
