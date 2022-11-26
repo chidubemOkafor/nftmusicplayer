@@ -12,6 +12,7 @@ import ReactAudioPlayer from "react-audio-player";
 import { onPlay } from "react-audio-player";
 import image from "../images/vidduo-high-resolution-color-logo.png"; //this would be chainged
 import { ethers } from "ethers";
+import { ImLoop } from "react-icons/im";
 
 const Music = (props) => {
   const { accounts, contract } = props;
@@ -25,6 +26,7 @@ const Music = (props) => {
   const [duration, setDuration] = useState("0.00");
   const [audio, setAudio] = useState(new Audio(audiolink));
   const [spin, setSpin] = useState("mt-10 h-36 w-36 rounded-full");
+  const [loop, setLoop] = useState(false);
 
   // interaction with smart contract
   const web3Handler = () => {
@@ -36,8 +38,8 @@ const Music = (props) => {
   const loadContract = () => contract; // this code is not completed
 
   //audio
-
-  const play = async () => {
+  // play and pause
+  const play = () => {
     setSwitch(false);
     setSpin("motion-safe:animate-spin2 mt-10 h-36 w-36 rounded-full");
     audio.play();
@@ -47,6 +49,15 @@ const Music = (props) => {
     setSwitch(true);
     setSpin("mt-10 h-36 w-36 rounded-full");
     audio.pause();
+  };
+
+  // handle loop to true or false
+  const LoopTrue = () => {
+    audio.loop = setLoop(true);
+  };
+
+  const loopFalse = () => {
+    audio.loop = setLoop(false);
   };
 
   // const length = "10px";
@@ -71,9 +82,15 @@ const Music = (props) => {
               </div>
             </div>
             <div className="flex mt-6 space-x-4 text-white">
-              <button>
-                <TfiReload className="transition ease-in-out delay-150 h-8 w-8 hover:text-pink-600" />
-              </button>
+              {!loop ? (
+                <button onClick={LoopTrue}>
+                  <ImLoop className="transition ease-in-out delay-150 h-8 w-8 hover:text-pink-600" />
+                </button>
+              ) : (
+                <button onClick={loopFalse}>
+                  <ImLoop className="transition text-pink-600 ease-in-out delay-150 h-8 w-8 " />
+                </button>
+              )}
               <button>
                 <AiFillStepBackward className="transition ease-in-out delay-150 h-8 w-8 hover:text-pink-600" />
               </button>
