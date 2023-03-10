@@ -1,51 +1,82 @@
-// SPDX-License-Identification: MIT
+// SPDX-License-Identifier: MIT
 
 pragma solidity 0.8.1;
 
-interface IERC721 {
-    function transferFrom(
-        address _from,
-        address _to,
-        uint256 _id
-    ) external;
-}
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract Marketplace {
-     address payable public seller;
-     address public nftAddress;
- 
-    enum Status {
-       video,
-       music
+contract Marketplace is ERC721URIStorage {
+    using Counters for Counters.Counter;
+    Counters.Counter private _nftIds;
+
+    address payable public seller;
+    // uint256 public createTokenFee = 0.02 ether;
+
+    //modifier
+    modifier onlyListed(uint256 _nftId) {
+        require(isListed[_nftId], "token must listed");
+        _;
     }
 
-     mapping(uint257 => bool) public isListed;
-     mapping(uint256 => uint256) public price;
-     mapping(uint256 => uint256) public format; // this shows wether the format is music or video
-     mapping(uint256 => address) public buyer;
-     mapping(uint256 => uint256) public marketPlaceAddress
-     mapping(uint256 => mapping(address => bool)) public approval;
+    //mappings
+    mapping(uint256 => bool) public isListed;
+    mapping(uint256 => uint256) public price;
+    mapping(uint256 => uint256) public marketPlaceAddress;
 
-    constructor(address _seller, address _nftAddress) {
-        seller = _seller,
-        nftAddress = _nftAddress
-    }
+    //constructor
+    constructor() ERC721("Vidduo", "vdo") {}
 
-    
-    function list(uint256 _nftId, address _buyer, uint256 _price, Status _status) public {
-           IERC721(nftAddress).transferFrom(msg.sender,address(this), _nftId);
-           isListed[_nftId] = true;
-           price[_nftId] = _price;
-           format[_nftId] = _status;
-           buyer[buyer] = _buyer;
-    }
-    function approveSale(uint256 _nftId) public {
-        approval[_nftId][msg.sender] = true;
+    function list(uint256 _nftId, uint256 _listingPrice) public {
+        require(msg.sender == ownerOf(_nftId), "you are not the owner");
+        _transfer(msg.sender, address(this), _nftId);
+        isListed[_nftId] = true;
+        price[_nftId] = _listingPrice;
+        seller = payable(msg.sender);
     }
 
-    function deposit(uint256 _nftId) payable public {
-        require(marketPlaceAddress[_nftId] >= msg.value, "insufficient funds");
-       
+    function updateListPrice(uint256 _nftId, uint256 _price)
+        public
+        onlyListed(_nftId)
+    {
+        price[_nftId] = _price;
     }
+
+    function buy(uint256 _nftId) public payable onlyListed(_nftId) {
+        require(msg.value == price[_nftId], "not equal to price");
+        finalizeSale(_nftId);
+    }
+
+    function createToken(string memory _tokenUri, uint256 _price) public {
+        require(_price > 0, "value must be greater than zero");
+        // require(msg.value == createTokenFee, "value no create token fee");
+        _nftIds.increment();
+        uint256 newItemId = _nftIds.current();
+        _mint(msg.sender, newItemId);
+        _setTokenURI(newItemId, _tokenUri);
+        list(newItemId, _price);
+    }
+
+    // function getUnSoldNft() public view returns() {
+    //     return
+    // }
+
+    function totalsupply() public view returns (uint256) {
+        return _nftIds.current();
+    }
+
+    // this is a fallback function for recieving ether
     receive() external payable {}
+
+    function finalizeSale(uint256 _nftId) private onlyListed(_nftId) {
+        _transfer(ownerOf(_nftId), msg.sender, _nftId);
+        seller.transfer(msg.value);
+        price[_nftId] = 0;
+        isListed[_nftId] = false;
+    }
+
+    // this returns the balance of the contract
+    function getBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
 }

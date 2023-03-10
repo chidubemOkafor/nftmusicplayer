@@ -6,6 +6,9 @@ module.exports = {
       fontFamily: {
         ubuntu: ["Ubuntu"],
       },
+      animation: {
+        spin2: "spin 3s linear infinite",
+      },
     },
   },
   plugins: [],

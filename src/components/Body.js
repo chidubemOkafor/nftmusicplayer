@@ -1,4 +1,5 @@
 import "../index.css";
+import { AiOutlineLoading } from "react-icons/ai";
 import projectLogo from "../images/vidduo-high-resolution-logo-color-on-transparent-background.png";
 import { Player } from "video-react";
 import { useState } from "react";
@@ -8,25 +9,17 @@ const Body = (props) => {
   const isConnected = Boolean(accounts[0]);
 
   return (
-    <div className=" h-screen justify-between item-center">
-      <div className=" justify-between item-center">
-        {isConnected ? (
-          <div>
-            <div>
-              <Player className="content-center w-[80vh] h-[40vh] pb-48 text-center justify-between item-center">
-                <source src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4" />
-              </Player>
-            </div>
-            <div>
-              <button>listen to music</button>
-            </div>
-          </div>
-        ) : (
-          <div>
-            <p className="font-ubuntu text-5xl">Wallet is not Connected</p>
-          </div>
-        )}
-      </div>
+    <div className="flex justify-center">
+      {isConnected ? (
+        <div>videos will be here</div>
+      ) : (
+        <div className="flex mt-48">
+          <AiOutlineLoading className=" animate-spin text-blue-700 h-10 w-10" />{" "}
+          <p className=" fontFamily-ubuntu text-2xl text-slate-300 ml-2">
+            collect to metamask
+          </p>
+        </div>
+      )}
     </div>
   );
 };
