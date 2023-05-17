@@ -11,12 +11,13 @@ const Body = (props) => {
   return (
     <div className="flex justify-center">
       {isConnected ? (
-        <div>videos will be here</div>
+        <div>
+          </div>
       ) : (
         <div className="flex mt-48">
           <AiOutlineLoading className=" animate-spin text-blue-700 h-10 w-10" />{" "}
           <p className=" fontFamily-ubuntu text-2xl text-slate-300 ml-2">
-            collect to metamask
+            connect to metamask
           </p>
         </div>
       )}

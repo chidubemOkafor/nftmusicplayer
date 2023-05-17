@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.1;
-
+pragma solidity ^0.8.1;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -13,22 +12,24 @@ contract Marketplace is ERC721URIStorage {
     address payable public seller;
     // uint256 public createTokenFee = 0.02 ether;
 
-    //modifier
-    modifier onlyListed(uint256 _nftId) {
-        require(isListed[_nftId], "token must listed");
-        _;
-    }
-
     //mappings
     mapping(uint256 => bool) public isListed;
     mapping(uint256 => uint256) public price;
     mapping(uint256 => uint256) public marketPlaceAddress;
 
+        //modifier
+    modifier onlyListed(uint256 _nftId) {
+        require(isListed[_nftId], "token must listed");
+        _;
+    }
+
+
+
     //constructor
     constructor() ERC721("Vidduo", "vdo") {}
 
     function list(uint256 _nftId, uint256 _listingPrice) public {
-        require(msg.sender == ownerOf(_nftId), "you are not the owner");
+        require(msg.sender == ownerOf(_nftId), "you are not the owner"); //this to require that the message sender is the sender of the address
         _transfer(msg.sender, address(this), _nftId);
         isListed[_nftId] = true;
         price[_nftId] = _listingPrice;
