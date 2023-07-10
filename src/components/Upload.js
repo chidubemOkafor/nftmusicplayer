@@ -23,8 +23,10 @@ function Upload(props) {
     try {
       //upload the file to IPFS
       const response = await uploadFileToIPFS(file);
+      console.log(response);
       if (response.success === true) {
         console.log("Uploaded image to Pinata: ", response.pinataURL);
+
         setFileURL(response.pinataURL);
       }
     } catch (e) {
@@ -35,26 +37,27 @@ function Upload(props) {
   //This function uploads the metadata to IPFS
   async function uploadMetadataToIPFS() {
     const { name, description, price } = formParams;
-    //Make sure that none of the fields are empty
-    if (!name || !description || !price || !fileURL) return;
-
+    // Make sure that none of the fields are empty
+    if (!name || !description || !price || !fileURL) return null;
     const nftJSON = {
       name,
       description,
       price,
-      image: fileURL,
+      video: fileURL,
     };
 
     try {
-      //upload the metadata JSON to IPFS
+      // Upload the metadata JSON to IPFS
       const response = await uploadJSONToIPFS(nftJSON);
       if (response.success === true) {
-        console.log("Uploaded JSON to Pinata: ", response);
-        console.log(response.pinataURL);
+        alert("Uploaded JSON to Pinata: ", response);
         return response.pinataURL;
+      } else {
+        alert(response.pinataURL);
+        console.log(response.message);
       }
     } catch (e) {
-      console.log("error uploading JSON metadata:", e);
+      console.log("Error uploading JSON metadata:", e);
     }
   }
 
@@ -64,6 +67,7 @@ function Upload(props) {
     //Upload data to IPFS
     try {
       const metadataURL = await uploadMetadataToIPFS();
+      alert(metadataURL);
       //After adding your Hardhat network to your metamask, this code will get providers and signers
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
@@ -76,14 +80,11 @@ function Upload(props) {
         signer
       );
       setContract(contract);
-
       //massage the params to be sent to the create NFT request
       const price = ethers.utils.parseUnits(formParams.price, "ether");
-
       //actually create the NFT
       let transaction = await contract.createToken(metadataURL, price);
       await transaction.wait();
-
       alert("Successfully listed your NFT!");
       updateMessage("");
       updateFormParams({ name: "", description: "", price: "" });
@@ -93,7 +94,6 @@ function Upload(props) {
     }
   }
 
-  console.log("Working", process.env);
   return (
     <div className="flex justify-center">
       {isConnected ? (
