@@ -16,21 +16,39 @@ function Upload(props) {
   const ethers = require("ethers");
   const [message, updateMessage] = useState("");
 
+  //get file extiontion helper
+  function getFileExtension(filename) {
+    // Split the filename by dot (.)
+    const parts = filename.split(".");
+
+    // Extract the last part (file extension)
+    const extension = parts[parts.length - 1];
+
+    return extension;
+  }
+
   //This function uploads the NFT image to IPFS
   async function OnChangeFile(e) {
     let file = e.target.files[0];
-    //check for file extension
-    try {
-      //upload the file to IPFS
-      const response = await uploadFileToIPFS(file);
-      console.log(response);
-      if (response.success === true) {
-        console.log("Uploaded image to Pinata: ", response.pinataURL);
+    const file_extention = getFileExtension(file);
+    if (file_extention != "mp4" || "mp3") {
+      if (file) {
+        //check for file extension
+        try {
+          //upload the file to IPFS
+          const response = await uploadFileToIPFS(file);
+          console.log(response);
+          if (response.success === true) {
+            console.log("Uploaded image to Pinata: ", response.pinataURL);
 
-        setFileURL(response.pinataURL);
+            setFileURL(response.pinataURL);
+          }
+        } catch (e) {
+          console.log("Error during file upload", e);
+        }
       }
-    } catch (e) {
-      console.log("Error during file upload", e);
+    } else {
+      alert("file must be a video or an audio");
     }
   }
 

@@ -1,7 +1,7 @@
 const { expect, assert } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("MarketPlace", async () => {
+describe("MarketPlace", () => {
   let Marketplace;
   let buyer, seller;
   let toWEI, toWei;

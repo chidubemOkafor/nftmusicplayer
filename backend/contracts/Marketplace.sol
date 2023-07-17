@@ -17,13 +17,11 @@ contract Marketplace is ERC721URIStorage {
     mapping(uint256 => uint256) public price;
     mapping(uint256 => uint256) public marketPlaceAddress;
 
-        //modifier
+    //modifier
     modifier onlyListed(uint256 _nftId) {
         require(isListed[_nftId], "token must listed");
         _;
     }
-
-
 
     //constructor
     constructor() ERC721("Vidduo", "vdo") {}
@@ -36,10 +34,10 @@ contract Marketplace is ERC721URIStorage {
         seller = payable(msg.sender);
     }
 
-    function updateListPrice(uint256 _nftId, uint256 _price)
-        public
-        onlyListed(_nftId)
-    {
+    function updateListPrice(
+        uint256 _nftId,
+        uint256 _price
+    ) public onlyListed(_nftId) {
         price[_nftId] = _price;
     }
 
